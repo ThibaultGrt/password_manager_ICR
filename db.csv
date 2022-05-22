@@ -1,0 +1,3 @@
+username,fingerprint,master_key_salt,cipher_passwords_key
+jojo,"$argon2id$v=19$m=65536,t=10,p=4$gJGxJYCqSg2D1GGaA/F3TQ$LFNkB7zwKNhnT6UVC4OeVtIlyc1vjzUuawMEhp/cJrQ",yW/YaHX+LLNySg+BoMEgJw==,"{""nonce"": ""XITlpGOdPey9BWyL"", ""tag"": ""mmixm0H+RXaezy6eifHP1Q=="", ""ciphertext"": ""7sbiBS2fBbFOUpQ4G3m9bR0SOIOJByt1dpWPjnrc2Yc=""}"
+max,"$argon2id$v=19$m=65536,t=10,p=4$EdTIppl/scvmBJtmSaiOfg$7u3jNaZwVFn24uWxDzQfRV4yC0eAPB92scAAv5VyKV0",It/wq5FzGKz1OFHVQwQ0Ug==,"{""nonce"": ""e58vo49c4mD81baV"", ""tag"": ""g0md6zB+yvyk91No6alYPQ=="", ""ciphertext"": ""bdi28vX/irw/CPnCMhdWZyuL5Z4pnLh/bA9H7qMjXoQ=""}"
