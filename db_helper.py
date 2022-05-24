@@ -25,11 +25,11 @@ def initialize_shared(username):
     file_path = shared_from_path+username+'_shared.csv'
     with open(file_path, 'w', newline='') as fp :
         writer = csv.writer(fp)
-        writer.writerow(['receiver','site','enc_password'])
+        writer.writerow(['receiver','site'])
     file_path = shared_to_path+username+'_shared.csv'
     with open(file_path, 'w', newline='') as fp :
         writer = csv.writer(fp)
-        writer.writerow(['sender','site'])
+        writer.writerow(['sender','site','enc_password'])
 
 
 def initialize_files(user):

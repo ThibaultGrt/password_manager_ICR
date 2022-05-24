@@ -9,7 +9,7 @@ from Crypto import Random
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
-time = 10  #TODO: Ne pas oublier de le monter à 1000
+time = 1000
 memory = 65536
 parallelism = 4
 hash_len = 32

@@ -108,7 +108,7 @@ def websites_display(user, passwords_key):
         x = input("To display one of theses, enter the right number here or tap 'G' to go back : ")
         if x == "G":
             pwd_manager(user, passwords_key)
-        elif sites[int(x)-1] != None:
+        elif not x == "" and int(x) <= len(sites) and sites[int(x)-1] != None:
             website_display(user, sites[int(x)-1], passwords_key)
             break
         else:
@@ -124,10 +124,13 @@ def website_display(user, selected_site, passwords_key):
         x = input("You choice ? (Tap 'G' to go back) : ")
         if x == "1":
             show_password(user, selected_site, passwords_key)
+            printer.space()
         elif x == "2":
             copy_password(user, selected_site, passwords_key)
+            printer.space()
         elif x == "3":
             share_password(user, selected_site, passwords_key)
+            printer.space()
         elif x == "G":
             websites_display(user, passwords_key)
         else:
@@ -163,6 +166,7 @@ def share_password(user, site, passwords_key):
     
     if helper.share_password(user, passwords_key, receiver, site):
         print("Password shared !")
+        websites_display(user, passwords_key)
 
 
 def save__new_password(user, passwords_key):
@@ -190,7 +194,7 @@ def shared_display(user, passwords_key):
         x = input("To display one of theses, enter the right number here or tap 'G' to go back : ")
         if x == "G":
             pwd_manager(user, passwords_key)
-        elif list[int(x)-1] != None:
+        elif not x == "" and int(x) <= len(list) and list[int(x)-1] != None:
             show_shared(user, list[int(x)-1], passwords_key)
             break
 
