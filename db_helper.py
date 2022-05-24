@@ -1,6 +1,7 @@
 import pandas
 import csv
 from Crypto.PublicKey import RSA
+import os
 
 
 passwords_path = "passwords/"
@@ -173,12 +174,14 @@ def get_shared_password(receiver, sender, site):
 
 if __name__=="__main__":
     print("You're running the db helper")
-    # print(update_password('thiba', 'hashnormal'))
+    print("Theses commands need to be run the first time you use the password manager")
     initialize_db()
-    # sites = get_websites_from("mister")
-    # print(len(sites))
-    # print(get_userlist())
-    # initialize_user_file("birth")
+    os.mkdir("passwords")
+    os.mkdir("private")
+    os.mkdir("public")
+    os.mkdir("shared_from")
+    os.mkdir("shared_to")
+
 
 
 

@@ -40,7 +40,7 @@ Un compte possède deux états : l'état verrouillé et l'état déverrouillé<b
 >> ##### Enregistrer un nouveau mot de passe
 >> ##### Voir/Accéder aux mots de passe
 >> ##### Partager un mot de passe avec un utilisateur
-### B. Comment utiliser le password manager ?
+### B. Comment utiliser le gestionnaire de mots de passe ?
 
 
 <br>
@@ -61,7 +61,7 @@ Algorithmes utilisés :
 
 La gestion du mot de passe maître est essentiel dans le gestionnaire de mots de passe, car en plus d'authentifier l'utilisateur sur son compte, il va nous permettre de générer les clés qui vont être utilisés pour chiffrer et déchiffrer les mots de passe que l'utilisateur va enregistré sur son gestionnaire.
 <br><br>
-#### Termes utilisé :
+#### Termes utilisés :
 - Mot de passe maître : Mot de passe utilisé par l'utilisateur pour se connecter à son compte. 
 - Empreinte du mot de passe maître : Hash du mot de passe maître stocké en base de données.
 - Clé maître : Deuxième hash du mot de passe maître utilisé comme clé de chiffrement. Non stocké en base de données, stockage de son sel.
@@ -86,6 +86,9 @@ Avantages de cette méthode :
 - La fuite de l'empreinte du mot de passe maître (par dump de base de données) ne permet pas à un attaquant de déchiffrer les mots de passe de l'utilisateur.
 - Le sel généré par Argon limite les bruteforces sur le mot de passe maître.
 - Un changement du mot de passe maître n'impacte pas le chiffrement des anciens mots de passe. La clé utilisée pour les chiffrer ne changera pas, uniquement la clé maître sera modifié.
+
+Améliorations possibles: 
+- Ajouter l'utilisation d'un poivre afin d'empêcher toutes tentatives de bruteforce.
 
 <br>
 
@@ -114,12 +117,20 @@ Algorithmes utilisés:
 
 Comme expliqué précédemment, la clé de chiffrement des mots de passe est généré aléatoirement à la création du compte de l'utilisateur. Celle-ci est chiffré par la clé maître généré depuis le mot de passe maître de l'utilisateur. L'algorithme qui a été choisi pour le chiffrement de cette clé et de tout les mots de passe de l'utilisateur est Chacha20-Poly1305. Il nous permet l'authentification des mots de passe en plus du chiffrement. De plus, cet algorithme de chiffrement par flots est très simple d'utilisation et permet d'intégrer des données (header) supplémentaires dans le MAC. On verra dans notre cas que cette fonctionnalité est très utile. La taille de clé choisi est de 256 bits pour les deux processus de chiffrement (clé des mots de passe + mots de passe).
 
+<br>
+
 ### Enregistrer un nouveau mot de passe
 
 Tout les mots de passe d'un utilisateur sont stocké dans un fichier qui lui est propre.
 Lorsqu'un utilisateur souhaite ajouter un nouveau mot de passe, nous allons utiliser Chacha20-Poly1305. 
 Afin de garantir l'intégrité des données enregistrées, nous ajoutons le nom du site internet comme `header`. 
 Cela nous permet de l'authentifier avec le mot de passe qui correspond, sans que ce dernier soit chiffré (car cela n'est pas nécessaire). De cette manière, un attaquant qui souhaiterait altérer les données en inversant les mots de passe des sites sera remarqué.
+
+#### Améliorations possibles :
+- Afin de protéger les mots de passe trop court, possibilité d'ajouter un padding avant de chiffrer. Ainsi tout les mots de passe on la même taille et il n'est pas possible de savoir combien de caractères il y a à bruteforcer.
+
+<br>
+<br>
 
 
 ### Voir/Accéder aux mots de passe
@@ -129,12 +140,14 @@ Il peut alors décider :
 - d'afficher le mot de passe en clair
 - de le copier dans le presse papier 
 
+<br>
+<br>
 
 ### Partager un mot de passe avec un utilisateur
 
 La fonctionnalité partage de mot de passe est complexe à implémenter car elle nécessite de sécuriser l'échange entre deux utilisateurs. Afin de répondre à ce besoin, j'ai décidé d'utiliser l'algorithme de chiffrement asymétrique RSA-OAEP, appelé PKCS1_OAEP dans la librairie PyCryptodome. <br>
 
-- Lors de la création d'un compte utilisateur, une paire de clé RSA est créée est stocké dans des fichiers à part. Avant d'être stocké, la clé privé est d'abord chiffrée avec Chacha20-Poly1305 en utilisant la clé des mots de passe (celle généré grâce au mot de passe maître)
+- Lors de la création d'un compte utilisateur, une paire de clé RSA est créée est stocké dans des fichiers à part. Avant d'être stocké, la clé privé est d'abord chiffrée avec Chacha20-Poly1305 en utilisant la clé des mots de passe (celle généré grâce au mot de passe maître dérivé)
 
 - Quand un utilisateur veut partager un mot de passe, il récupère la clé publique du destinataire. Le mot de passe qu'il souhaite partager est d'abord déchiffré avec sa propre clé avant de la rechiffrer avec la clé publique de RSA. Le module utilisé pour chiffrer avec RSA s'appelle PKCS1_OAEP.
 
@@ -142,7 +155,30 @@ La fonctionnalité partage de mot de passe est complexe à implémenter car elle
 
 - Chaque utilisateur possède 2 fichiers pour les mots de passe partagés : un pour les mots de passe envoyé à quelqu'un, et un pour ceux reçus.
 
+Cette implémentation de protège pas la non-répudiation. Pour se faire, nous devons, en plus du chiffrement, signer le mot de passe envoyé. Cette signature peut se faire avec un algorithme de chiffrement asymétrique, typiquement RSA-OAEP ou ECC (Eliptic Curve Cryptography) de Pycryptodome.<br>
+L'utilisateur voulant partager son mot de passe vient signer le mot de passe chiffré avec sa clé privée. Le récepteur du mot de passe doit alors vérifier la signature avec la clé publique de l'envoyeur avant de déchiffrer le mot de passe. De cette manière, nous sommes sûr que celui qui partage le mot de passe est la bonne personne. <br>
+Par soucis de temps, cette fonctionnalité n'a pas été implémentée mais sera nécessaire afin de garantir une confiance total aux utilisateurs du gestionnaire de mots de passe.
 
+<br>
+<br>
+
+# B. Comment utiliser la gestionnaire de mots de passe
+
+### Application développée en Python<br>
+Version utilisée : Python 3.9.13
+
+### Librairies installées:
+- PyCryptodome
+- Argon2-cffi
+- clipboard
+- pandas
+- csv
+
+### Première utilisation
+Pour créer tout les dossiers et les fichiers nécessaires au fonctionnement du gestionnaire, veuillez lancer la commande "python3 ./db_helper.py"
+
+### Lancer l'application
+"python3 ./password_manager.py"
 
 
 

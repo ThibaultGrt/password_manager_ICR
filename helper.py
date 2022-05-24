@@ -1,8 +1,6 @@
-from doctest import master
 from base64 import b64encode
 from base64 import b64decode
 import json
-import re
 from argon2 import PasswordHasher
 from argon2 import low_level
 import db_helper as db

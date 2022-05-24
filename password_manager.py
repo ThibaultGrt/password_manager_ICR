@@ -1,11 +1,13 @@
-from doctest import master
 import helper
 import db_helper as db
 import clipboard
+import printer
 
 ## Menu functions ##
 
 def login():
+    printer.space()
+    printer.title("Login")
     while True:
         user = input("Please enter your username : ")
         mp = input("Please enter your master password : ")
@@ -21,7 +23,9 @@ def login():
     pwd_manager(user, passwords_key)
 
 def signup():
-    print("/!\ This password need to be a strong one, and you'll need to remember it")
+    printer.space()
+    printer.title("Sign up")
+    print("/!\ This password need to be a strong one, and you'll need to remember it\n")
     while True:
         username = input("Please enter your username : ") 
         mp = input("Please enter your master password : ")
@@ -39,6 +43,8 @@ def signup():
     main()
 
 def change(): # In order to not re encrypt all passwords, we can generate a random key that we store using a KDF that use the master password
+    printer.space()
+    printer.title("Change your master password")
     while True:
         username = input("Please enter your username : ")
         mp = input("Please enter your master password : ")
@@ -62,7 +68,8 @@ def change(): # In order to not re encrypt all passwords, we can generate a rand
 ## Password manager functions ##
 
 def pwd_manager(user, passwords_key):
-    print("Hi ",user)
+    printer.space()
+    printer.title(user+"'s account")
     while True:
         print("What do you want to do ?")
         print("Access my passwords : 1")
@@ -87,7 +94,8 @@ def pwd_manager(user, passwords_key):
 
 
 def websites_display(user, passwords_key):
-    print("Here is the list of your websites :")
+    printer.space()
+    printer.title("List of your websites")
     sites = db.get_websites_of(user)
     if len(sites) <= 0:
         print("You don't have passwords yet, go create your first one !")
@@ -107,6 +115,8 @@ def websites_display(user, passwords_key):
             print("Wrong input, retry")
     return
 def website_display(user, selected_site, passwords_key):
+    printer.space()
+    printer.subtitle(selected_site)
     while True:
         print("Show password : 1")
         print("Copy password : 2")
@@ -124,13 +134,17 @@ def website_display(user, selected_site, passwords_key):
             print("I don't understand you choice")
     return
 
-def show_password(user, selected_site, passwords_key): #Clipboard password
+def show_password(user, selected_site, passwords_key):
+    printer.space()
+    printer.subtitle("Password")
     password = helper.get_password(user, selected_site, passwords_key)
     print("Site :", selected_site)
-    print("Password :", password)
+    print("Password :", password,"\n")
     websites_display(user, passwords_key)
 
 def copy_password(user, selected_site, passwords_key):
+    printer.space()
+    printer.subtitle("Copy password")
     clipboard.copy(helper.get_password(user, selected_site, passwords_key))
     websites_display(user, passwords_key)
 
@@ -138,6 +152,8 @@ def change_password():
     return
 
 def share_password(user, site, passwords_key):
+    printer.space()
+    printer.subtitle("Share password")
     while True:
         receiver = input("Enter the username of the user you want to share the password with : ")
         if db.has_user(receiver):
@@ -150,9 +166,11 @@ def share_password(user, site, passwords_key):
 
 
 def save__new_password(user, passwords_key):
-    print("You are saving a new password")
+    printer.space()
+    printer.title("Saving a new password")
     site = input("Enter the url of the website : ")
     password = input("Enter your password: ")
+    printer.space()
     if site in db.get_websites_of(user).tolist():
         print("There is already a password stored for this site")
         return False
@@ -160,6 +178,8 @@ def save__new_password(user, passwords_key):
 
 
 def shared_display(user, passwords_key):
+    printer.space()
+    printer.title("Shared passwords")
     list = db.get_shared_of(user)
     if len(list) == 0:
         print('There is no shared passwords here')
@@ -175,12 +195,15 @@ def shared_display(user, passwords_key):
             break
 
 def show_shared(user, shared, password_key):
+    printer.space()
+    printer.subtitle("Show shared password")
     password = helper.rsa_decryption(user, password_key, shared[0], shared[1])
-    print("Password : ", password)
+    print("Password : ", password,"\n")
 
 ## Menu function ##
 def main():
-    print("Welcome to my super password manager !")
+    printer.space()
+    printer.title("Welcome to my super password manager !")
     while True:
         print("What do you want to do ? (1: login, 2: create an account, 3: change password)")
         choice = input()
