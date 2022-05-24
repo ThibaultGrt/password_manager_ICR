@@ -55,7 +55,15 @@ Un compte possède deux états : l'état verrouillé et l'état déverrouillé<b
 <br>
 
 Algorithmes utilisés :
-- Argon2id (argon2-cffi 21.3.0)
+- Argon2id (argon2-cffi 21.3.0) : 
+    - python -m pip install argon2-cffi
+    - documentation : https://argon2-cffi.readthedocs.io/en/stable/installation.html
+    - paramètres :
+        - time(nombre d'itérations) = 1000
+        - memory = 65536
+        - parallelism = 4
+        - hash_len = 32 bytes
+        - salt_len = 16 bytes
 - PRNG de la librairie Crypto.Random de Pycryptodome
 - Chacha20-Poly1305, clé de 256 bits
 
@@ -78,7 +86,7 @@ Ce mot de passe maître va être hashé grâce à l'algorithme Argon2id. Celui-c
 L'empreinte sera alors stocké avec le nom d'utilisateur dans la base de données.<br>
 
 Le mot de passe maître sera hashé une deuxième fois avec un sel différent pour générer la clé maître. Le sel sera stocké en base de données.
-La clé maître est ensuite utilisé pour chiffrer une clé générée aléatoirement grâce au PRNG de PyCryptodome avec Chacha20-Poly1305, utilisé pour chiffrer les futures mots de passe de l'utilisateur. Cette clé chiffrée est également stocké en base de données.<br>
+La clé maître est ensuite utilisé pour chiffrer une clé de 256 bits générée aléatoirement grâce au PRNG de PyCryptodome avec Chacha20-Poly1305, utilisé pour chiffrer les futures mots de passe de l'utilisateur. Cette clé chiffrée est également stocké en base de données.<br>
 
 Une fois le processus terminé, la clé maître ne sera plus accessible.
 
@@ -97,7 +105,6 @@ Améliorations possibles:
 A chaque fois que l'utilisateur se connecte, l'empreinte du mot de passe maître est vérifié. Si celle-ci est correcte alors l'utilisateur sera authentifié.<br>
 Nous récupérons la clé maître en effectuant le hash depuis le mot de passe maître et le sel stocké en base de données.<br>
 La clé de mots de passe est alors déchiffré et pourra être utilisé pour chiffrer ou déchiffrer les mots de passe de l'utilisateur.
-Lorsque celui-ci se déconnecte, la clé maître et la clé des mots de passes sont oubliées.
 
 <br>
 
@@ -139,6 +146,7 @@ Quand l'utilisateur est connecté, aucun mots de passe n'est stocké en clair. C
 Il peut alors décider :
 - d'afficher le mot de passe en clair
 - de le copier dans le presse papier 
+- partager le mot de passe
 
 <br>
 <br>
@@ -155,7 +163,7 @@ La fonctionnalité partage de mot de passe est complexe à implémenter car elle
 
 - Chaque utilisateur possède 2 fichiers pour les mots de passe partagés : un pour les mots de passe envoyé à quelqu'un, et un pour ceux reçus.
 
-Cette implémentation de protège pas la non-répudiation. Pour se faire, nous devons, en plus du chiffrement, signer le mot de passe envoyé. Cette signature peut se faire avec un algorithme de chiffrement asymétrique, typiquement RSA-OAEP ou ECC (Eliptic Curve Cryptography) de Pycryptodome.<br>
+Cette implémentation ne protège pas la non-répudiation. Pour se faire, nous devons, en plus du chiffrement, signer le mot de passe envoyé. Cette signature peut se faire avec un algorithme de chiffrement asymétrique, typiquement RSA-OAEP ou ECC (Eliptic Curve Cryptography) de Pycryptodome.<br>
 L'utilisateur voulant partager son mot de passe vient signer le mot de passe chiffré avec sa clé privée. Le récepteur du mot de passe doit alors vérifier la signature avec la clé publique de l'envoyeur avant de déchiffrer le mot de passe. De cette manière, nous sommes sûr que celui qui partage le mot de passe est la bonne personne. <br>
 Par soucis de temps, cette fonctionnalité n'a pas été implémentée mais sera nécessaire afin de garantir une confiance total aux utilisateurs du gestionnaire de mots de passe.
 
@@ -168,10 +176,15 @@ Par soucis de temps, cette fonctionnalité n'a pas été implémentée mais sera
 Version utilisée : Python 3.9.13
 
 ### Librairies installées:
-- PyCryptodome
-- Argon2-cffi
-- clipboard
-- pandas
+- PyCryptodome:
+    - commande d'installation : "pip install pycryptodome"
+- Argon2-cffi:
+    - commande d'installation : "python -m pip install argon2-cffi"
+    - documentation : https://argon2-cffi.readthedocs.io/en/stable/installation.html
+- clipboard:
+    - commande d'installation : "pip install clipboard"
+- pandas:
+    - commande d'installation : "pip install pandas" (version pip >=19.3) 
 - csv
 
 ### Première utilisation
