@@ -24,6 +24,7 @@ Un compte possède deux états : l'état verrouillé et l'état déverrouillé<b
 - Un attaquant ne doit pas être en mesure de retrouver les mots de passe, le mot de passe maître y compris.
 - Un attaquant ne doit pas être en mesure de bruteforce le mot de passe maître non-trivial.
 <br>
+
 ### Etat déverrouillé : <br>
 - Un attaquant ne doit pas pouvoir retrouver le mot de passe maître dans la mémoire.
 - Les mots de passe non demandé ne doivent pas être visible en clair.
