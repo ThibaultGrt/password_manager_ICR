@@ -120,7 +120,7 @@ def website_display(user, selected_site, passwords_key):
     while True:
         print("Show password : 1")
         print("Copy password : 2")
-        print("Shared password : 3")
+        print("Share password : 3")
         x = input("You choice ? (Tap 'G' to go back) : ")
         if x == "1":
             show_password(user, selected_site, passwords_key)

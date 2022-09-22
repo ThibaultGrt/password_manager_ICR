@@ -57,8 +57,6 @@ Un compte possède deux états : l'état verrouillé et l'état déverrouillé<b
 
 Algorithmes utilisés :
 - Argon2id (argon2-cffi 21.3.0) : 
-    - python -m pip install argon2-cffi
-    - documentation : https://argon2-cffi.readthedocs.io/en/stable/installation.html
     - paramètres :
         - time(nombre d'itérations) = 1000
         - memory = 65536
@@ -83,7 +81,7 @@ La gestion du mot de passe maître est essentiel dans le gestionnaire de mots de
 Lors de la création du compte, un nom d'utilisateur ainsi qu'un mot de passe maître va être demandé à l'utilisateur.
 Celui-ci va le taper deux fois pour être sûr qu'il n'ait pas fait d'erreur.<br>
 
-Ce mot de passe maître va être hashé grâce à l'algorithme Argon2id. Celui-ci génère un sel aléatoire pour chaque nouveau mot de passe ajouté. La version 2id maximise la résistance contre les attaques GPUs et les "side-channel attack".
+Ce mot de passe maître va être hashé grâce à l'algorithme Argon2id. Celui-ci génère un sel aléatoire pour chaque nouveau mot de passe ajouté. La version 2id maximise la résistance contre les attaques GPUs et les "side-channel attack". Le nombre d'itérations choisi pour Argon2 détermine le temps que l'on va mettre à hasher le mot de passe. Pour plus de sécurité, il est nécessaire d'augmenter ce nombre d'itérations. Le gestionnaire de mot de passe devant être un endroit sécurisé, j'ai décidé de faire 1000 itérations pour le mot de passe au détriment du temps mis à hasher (afin de tester l'application, il est possible de réduire ce nombre d'itérations pour que ce soit plus rapide). 
 L'empreinte sera alors stocké avec le nom d'utilisateur dans la base de données.<br>
 
 Le mot de passe maître sera hashé une deuxième fois avec un sel différent pour générer la clé maître. Le sel sera stocké en base de données.

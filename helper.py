@@ -25,7 +25,7 @@ def compute_hash(pwd):
 
 def compute_hash_from_salt(pwd, salt):
     if salt == None:
-        salt = Random.get_random_bytes(16) # why cast in bytes ?
+        salt = Random.get_random_bytes(16)
     res = low_level.hash_secret_raw(bytes(pwd, 'utf-8'), salt, time_cost=time, memory_cost=memory, parallelism=parallelism, hash_len=hash_len, type=low_level.Type.ID)
     return res, salt
 
@@ -98,7 +98,6 @@ def rsa_encryption(receiver, password):
         print("Can't encrypt: ", e)
     
 
-## Cut in 2 functions
 def rsa_decryption(receiver, key, sender, site):
     try:
         enc_private_key = db.get_private(receiver)
